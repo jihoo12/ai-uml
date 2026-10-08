@@ -6,7 +6,13 @@ AI writes **JSON or XML** describing actors, use cases, and relationships. AI UM
 
 ## Quick start
 
-Open `index.html` in a modern browser. No build step, account, server, or API key is required.
+Serve the project over HTTP (ES modules do not reliably load from `file://` URLs). No build step, account, or API key is required.
+
+```sh
+python3 -m http.server 8000
+```
+
+Open **http://localhost:8000** in a modern browser.
 
 1. Select JSON or XML (or upload a `.json` / `.xml` file).
 2. Paste the AI-generated diagram specification.
@@ -83,7 +89,7 @@ Run the Node.js tests (Node 18+):
 node --test tests/model.test.mjs
 ```
 
-You can also serve the project locally using `python3 -m http.server 8000` and open `http://localhost:8000`.
+The application uses native ES modules, so always access it through an HTTP server rather than opening `index.html` directly.
 
 ## Security
 

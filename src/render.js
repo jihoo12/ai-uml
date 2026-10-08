@@ -1,3 +1,4 @@
+import { wrapLabel } from './labels.js';
 const NS = 'http://www.w3.org/2000/svg';
 const svgEl = (tag, attrs = {}, content) => {
   const el = document.createElementNS(NS, tag);
@@ -8,16 +9,9 @@ const svgEl = (tag, attrs = {}, content) => {
 const append = (parent, ...children) => { children.forEach(child => parent.appendChild(child)); return parent; };
 const line = (x1,y1,x2,y2, attrs = {}) => svgEl('line',{x1,y1,x2,y2,...attrs});
 function multiline(parent, text, x, y, maxLength = 22) {
-  const words = text.split(/\s+/);
-  const lines = []; let current = '';
-  for (const word of words) {
-    if (current && (current + ' ' + word).length > maxLength) { lines.push(current); current = word; }
-    else current = current ? current + ' ' + word : word;
-  }
-  if (current) lines.push(current);
-  const visible = lines.slice(0, 4);
-  const label = svgEl('text',{x,y:y-(visible.length-1)*9,'text-anchor':'middle','font-size':14,fill:'#17233c'});
-  visible.forEach((part,i) => label.appendChild(svgEl('tspan',{x,dy:i?18:0},part)));
+  const lines = wrapLabel(text, maxLength);
+  const label = svgEl('text',{x,y:y-(lines.length-1)*9,'text-anchor':'middle','font-size':14,fill:'#17233c'});
+  lines.forEach((part,i) => label.appendChild(svgEl('tspan',{x,dy:i?18:0},part)));
   parent.appendChild(label);
 }
 function stickFigure(parent,x,y) {
@@ -26,14 +20,16 @@ function stickFigure(parent,x,y) {
 }
 function edgePoints(a,b) {
   const dx=b.x-a.x,dy=b.y-a.y;
-  const startScale=a.kind==='usecase'?Math.min(1,1/Math.sqrt((dx*dx)/(105*105)+(dy*dy)/(39*39))):Math.min(1,37/Math.max(1,Math.hypot(dx,dy)));
-  const endScale=b.kind==='usecase'?Math.min(1,1/Math.sqrt((dx*dx)/(105*105)+(dy*dy)/(39*39))):Math.min(1,37/Math.max(1,Math.hypot(dx,dy)));
+  const startScale=a.kind==='usecase'?Math.min(1,1/Math.sqrt((dx*dx)/(105*105)+(dy*dy)/(Math.max(43,wrapLabel(a.name,22).length*10+18)**2))):Math.min(1,37/Math.max(1,Math.hypot(dx,dy)));
+  const endScale=b.kind==='usecase'?Math.min(1,1/Math.sqrt((dx*dx)/(105*105)+(dy*dy)/(Math.max(43,wrapLabel(b.name,22).length*10+18)**2))):Math.min(1,37/Math.max(1,Math.hypot(dx,dy)));
   return {x1:a.x+dx*startScale,y1:a.y+dy*startScale,x2:b.x-dx*endScale,y2:b.y-dy*endScale};
 }
 export function renderDiagram(model) {
   const actors=model.actors, cases=model.useCases;
   const rowCount=Math.max(actors.length,cases.length,1);
-  const height=Math.max(440,rowCount*155+130), width=940;
+  const maxLines=Math.max(1,...actors.map(actor=>wrapLabel(actor.name,19).length),...cases.map(item=>wrapLabel(item.name,22).length));
+  const rowSpacing=Math.max(155,maxLines*20+125);
+  const height=Math.max(440,rowCount*rowSpacing+130), width=940;
   const svg=svgEl('svg',{xmlns:NS,viewBox:'0 0 '+width+' '+height,width,height,role:'img','aria-label':model.title});
   append(svg,svgEl('title',{},model.title));
   const defs=svgEl('defs');
@@ -68,7 +64,8 @@ export function renderDiagram(model) {
   });
   cases.forEach(item=>{
     const p=positions.get(item.id);
-    svg.appendChild(svgEl('ellipse',{cx:p.x,cy:p.y,rx:108,ry:43,fill:'#fff',stroke:'#3f64af','stroke-width':2}));
+    const lineCount=wrapLabel(item.name,22).length;
+    svg.appendChild(svgEl('ellipse',{cx:p.x,cy:p.y,rx:108,ry:Math.max(43,lineCount*10+18),fill:'#fff',stroke:'#3f64af','stroke-width':2}));
     multiline(svg,item.name,p.x,p.y+5,22);
   });
   return svg;
