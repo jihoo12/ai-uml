@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="AI가 작성한 JSON 또는 XML을 UML 다이어그램으로 즉시 변환하는 브라우저 기반 도구입니다." />
+    <meta name="theme-color" content="#0c1117" />
+    <title>AI UML Studio — Structure to diagram</title>
+    <link rel="icon" type="image/svg+xml" href="./assets/logo.svg" />
+    <link rel="stylesheet" href="./styles.css" />
+    <script type="module" src="./src/app.js"></script>
+  </head>
+  <body>
+    <div class="page-shell">
+      <header class="topbar">
+        <a class="brand" href="./" aria-label="AI UML Studio 홈">
+          <span class="brand-mark" aria-hidden="true"><span></span><span></span><span></span><span></span></span>
+          <span>ai<span class="brand-accent">uml</span><span class="brand-muted">.studio</span></span>
+        </a>
+        <div class="topbar-right">
+          <span class="topbar-label"><span class="online-dot"></span> LOCAL-FIRST DIAGRAM TOOL</span>
+          <a class="github-link" href="https://github.com/jihoo12/ai-uml" target="_blank" rel="noopener noreferrer">GitHub <span aria-hidden="true">↗</span></a>
+        </div>
+      </header>
+
+      <main>
+        <section class="hero" aria-labelledby="hero-title">
+          <div class="eyebrow"><span class="eyebrow-line"></span> STRUCTURED INPUT · VISUAL OUTPUT <span class="version">v0.1</span></div>
+          <h1 id="hero-title">설계는 AI에게.<br /><span>시각화는 여기서.</span></h1>
+          <p>AI가 만든 JSON 또는 XML을 붙여넣으면, 수정 가능한 다이어그램으로 즉시 변환합니다.<br class="desktop-only" /> 복잡한 설정도, API 키도 필요 없습니다.</p>
+          <div class="hero-chips" aria-label="지원 기능">
+            <span><i class="chip-dot"></i> Class diagram</span>
+            <span><i class="chip-dot"></i> Sequence diagram</span>
+            <span><i class="chip-dot"></i> Flowchart</span>
+            <span class="chip-emphasis">JSON <span class="chip-divider">/</span> XML</span>
+          </div>
+        </section>
+
+        <section class="workspace" aria-label="다이어그램 작업 공간">
+          <div class="workspace-heading">
+            <div class="workspace-heading-left">
+              <span class="section-index">01 / WORKSPACE</span>
+              <h2>Diagram playground</h2>
+            </div>
+            <span class="workspace-hint"><span class="keyboard-key">⌘</span> + <span class="keyboard-key">↵</span> 렌더링</span>
+          </div>
+
+          <div class="workspace-grid">
+            <section class="panel editor-panel" aria-labelledby="editor-title">
+              <div class="panel-top">
+                <div class="panel-heading">
+                  <span class="panel-number">01</span>
+                  <div><span class="panel-overline">SOURCE</span><h3 id="editor-title">구조 데이터</h3></div>
+                </div>
+                <span class="panel-status"><span class="status-point"></span> EDITOR</span>
+              </div>
+
+              <div class="editor-toolbar">
+                <div class="format-tabs" aria-label="데이터 형식 선택">
+                  <button type="button" class="format-tab is-active" data-format="json" aria-pressed="true">JSON</button>
+                  <button type="button" class="format-tab" data-format="xml" aria-pressed="false">XML</button>
+                </div>
+                <div class="toolbar-right">
+                  <label class="sr-only" for="example-select">예제 선택</label>
+                  <select id="example-select" title="예제 종류">
+                    <option value="flowchart">Flowchart</option>
+                    <option value="class">Class</option>
+                    <option value="sequence">Sequence</option>
+                  </select>
+                  <button type="button" class="icon-button" id="reset-button" title="선택한 예제 불러오기" aria-label="선택한 예제 불러오기">↻</button>
+                </div>
+              </div>
+
+              <div class="editor-wrap" id="drop-zone">
+                <div class="file-line"><span id="source-filename">diagram.json</span><span class="code-language" id="code-language">JSON</span></div>
+                <label class="sr-only" for="source-editor">JSON 또는 XML 다이어그램 소스</label>
+                <textarea id="source-editor" spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off" aria-describedby="editor-help"></textarea>
+                <div class="drop-overlay" aria-hidden="true">파일을 여기에 놓으세요</div>
+              </div>
+
+              <div class="editor-footer">
+                <div class="editor-footer-info" id="editor-help"><span id="line-count">0 LINES</span><span class="footer-separator">·</span><span>자동 미리보기</span></div>
+                <div class="editor-footer-actions">
+                  <button type="button" class="text-button" id="open-file-button">파일 열기 <span>↗</span></button>
+                  <button type="button" class="text-button" id="download-source-button">소스 저장 <span>↓</span></button>
+                </div>
+              </div>
+              <input type="file" id="file-input" accept=".json,.xml,application/json,application/xml,text/xml,text/plain" hidden />
+            </section>
+
+            <section class="panel preview-panel" aria-labelledby="preview-title">
+              <div class="panel-top">
+                <div class="panel-heading">
+                  <span class="panel-number">02</span>
+                  <div><span class="panel-overline">OUTPUT</span><h3 id="preview-title">다이어그램</h3></div>
+                </div>
+                <div class="preview-actions">
+                  <button type="button" class="outline-button" id="copy-mermaid-button" disabled>Mermaid 복사</button>
+                  <button type="button" class="primary-button" id="download-svg-button" disabled>SVG 저장 <span aria-hidden="true">↗</span></button>
+                </div>
+              </div>
+              <div class="preview-meta">
+                <span id="diagram-type">FLOWCHART</span>
+                <span class="meta-split">/</span>
+                <span id="diagram-title">AI 주문 처리 자동화</span>
+                <span class="preview-meta-right" id="diagram-count">7 NODES · 6 EDGES</span>
+              </div>
+              <div class="diagram-stage" id="diagram-stage" aria-live="polite">
+                <div id="diagram-mount"></div>
+                <div class="diagram-placeholder" id="diagram-placeholder" hidden>
+                  <span class="placeholder-mark" aria-hidden="true">◇</span>
+                  <strong id="placeholder-title">다이어그램을 표시할 수 없습니다</strong>
+                  <p id="placeholder-detail">왼쪽 입력 형식을 확인해 주세요.</p>
+                </div>
+                <span class="canvas-corner corner-tl"></span><span class="canvas-corner corner-tr"></span>
+                <span class="canvas-corner corner-bl"></span><span class="canvas-corner corner-br"></span>
+              </div>
+              <div class="preview-footer">
+                <div id="render-status" class="render-status" role="status"><span class="render-dot"></span><span id="render-status-text">변환 준비 중</span></div>
+                <span class="preview-footer-note">POWERED BY MERMAID</span>
+              </div>
+            </section>
+          </div>
+          <details class="mermaid-details">
+            <summary>생성된 Mermaid 코드 확인 <span aria-hidden="true">↘</span></summary>
+            <pre id="mermaid-code" tabindex="0"></pre>
+          </details>
+        </section>
+
+        <section class="how-section" aria-labelledby="how-title">
+          <div class="how-heading">
+            <div><span class="section-index">02 / HOW IT WORKS</span><h2 id="how-title">AI와 함께 만드는 다이어그램</h2></div>
+            <button type="button" class="prompt-button" id="copy-prompt-button">AI용 프롬프트 복사 <span aria-hidden="true">↗</span></button>
+          </div>
+          <div class="steps">
+            <div class="step"><span class="step-number">01</span><span class="step-icon" aria-hidden="true">{ }</span><h3>구조를 생성</h3><p>AI에게 원하는 시스템을 설명하고 JSON 또는 XML 명세를 받습니다.</p></div>
+            <div class="step"><span class="step-number">02</span><span class="step-icon" aria-hidden="true">⌁</span><h3>붙여넣고 확인</h3><p>소스를 수정하면 유효성을 검사하고 미리보기를 자동 갱신합니다.</p></div>
+            <div class="step"><span class="step-number">03</span><span class="step-icon" aria-hidden="true">↗</span><h3>결과를 저장</h3><p>벡터 SVG를 저장하거나 Mermaid 코드를 다른 도구에 복사합니다.</p></div>
+          </div>
+        </section>
+      </main>
+
+      <footer class="site-footer">
+        <div class="footer-brand">ai<span>uml</span>.studio <span class="footer-subtitle">/ DATA TO DIAGRAM</span></div>
+        <span>OPEN SOURCE · BUILT FOR AI-FIRST WORKFLOWS</span>
+      </footer>
+    </div>
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  </body>
+</html>

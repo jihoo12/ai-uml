@@ -1,0 +1,12 @@
+{
+  "name": "ai-uml-studio",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Render AI-generated JSON/XML UML diagrams in the browser",
+  "scripts": {
+    "dev": "python3 -m http.server 4173",
+    "test": "node --test tests/*.test.js"
+  },
+  "engines": { "node": ">=20" }
+}
