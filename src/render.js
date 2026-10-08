@@ -1,4 +1,5 @@
 import { wrapLabel } from './labels.js';
+import { computeLayout } from './layout.js';
 const NS = 'http://www.w3.org/2000/svg';
 const svgEl = (tag, attrs = {}, content) => {
   const el = document.createElementNS(NS, tag);
@@ -26,10 +27,7 @@ function edgePoints(a,b) {
 }
 export function renderDiagram(model) {
   const actors=model.actors, cases=model.useCases;
-  const rowCount=Math.max(actors.length,cases.length,1);
-  const maxLines=Math.max(1,...actors.map(actor=>wrapLabel(actor.name,19).length),...cases.map(item=>wrapLabel(item.name,22).length));
-  const rowSpacing=Math.max(155,maxLines*20+125);
-  const height=Math.max(440,rowCount*rowSpacing+130), width=940;
+  const {width,height,positions}=computeLayout(model);
   const svg=svgEl('svg',{xmlns:NS,viewBox:'0 0 '+width+' '+height,width,height,role:'img','aria-label':model.title});
   append(svg,svgEl('title',{},model.title));
   const defs=svgEl('defs');
@@ -37,12 +35,8 @@ export function renderDiagram(model) {
   arrow.appendChild(svgEl('path',{d:'M0,0 L8,3 L0,6 Z',fill:'none',stroke:'#64748b','stroke-width':1.3}));
   defs.appendChild(arrow);svg.appendChild(defs);
   svg.appendChild(svgEl('text',{x:width/2,y:35,'text-anchor':'middle','font-size':23,'font-weight':700,fill:'#17233c'},model.title));
-  const box={x:335,y:76,width:535,height:height-111};
+  const box={x:318,y:76,width:900,height:height-111};
   append(svg,svgEl('rect',{...box,rx:15,fill:'#f7faff',stroke:'#7b94c3','stroke-width':2}),svgEl('text',{x:box.x+box.width/2,y:105,'text-anchor':'middle','font-size':17,'font-weight':600,fill:'#31518c'},model.system));
-  const positions=new Map();
-  const evenly=(index,total,top,bottom)=>top+(index+1)*(bottom-top)/(total+1);
-  actors.forEach((actor,i)=>positions.set(actor.id,{x:140,y:evenly(i,actors.length,118,height-75),kind:'actor',name:actor.name}));
-  cases.forEach((item,i)=>positions.set(item.id,{x:600,y:evenly(i,cases.length,130,height-45),kind:'usecase',name:item.name}));
   const connections=svgEl('g',{fill:'none',stroke:'#65748b','stroke-width':1.8});svg.appendChild(connections);
   model.relationships.forEach((rel,index)=>{
     const a=positions.get(rel.from),b=positions.get(rel.to);
@@ -60,7 +54,7 @@ export function renderDiagram(model) {
   actors.forEach(actor=>{
     const p=positions.get(actor.id);
     stickFigure(svg,p.x,p.y-10);
-    multiline(svg,actor.name,p.x,p.y+63,19);
+    multiline(svg,actor.name,p.x,p.y+63+(wrapLabel(actor.name,19).length-1)*9,19);
   });
   cases.forEach(item=>{
     const p=positions.get(item.id);

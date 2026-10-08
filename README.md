@@ -102,7 +102,7 @@ The same renderer powers both the web preview and the CLI, so diagrams have matc
 - Fully local rendering with downloadable SVG
 - No third-party runtime dependencies
 
-The first version uses an automatic column-based layout; it is not yet a general-purpose UML editor. Class, sequence, activity, and other UML diagrams are not yet supported.
+The renderer uses a relationship-aware, three-column layout: actor-linked use cases are placed first, with included and extended functions in subsequent columns. This reduces long overlapping connectors in typical workflows. It is not yet a general-purpose UML editor. Class, sequence, activity, and other UML diagrams are not yet supported.
 
 ## Development
 
