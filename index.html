@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>AI UML — JSON/XML to Use Case Diagram</title>
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <header class="site-header"><div><span class="brand">AI UML</span><span class="tagline">Structured input → UML diagram</span></div><a href="https://github.com/jihoo12/ai-uml" target="_blank" rel="noopener noreferrer">GitHub ↗</a></header>
+  <main>
+    <section class="intro"><h1>Turn AI-generated JSON or XML into UML.</h1><p>Describe actors and use cases in a machine-readable format, then render a clean SVG diagram. Everything runs locally in your browser.</p></section>
+    <div class="workspace">
+      <section class="panel editor" aria-label="Diagram source">
+        <div class="panel-heading"><h2>Source</h2><div class="controls"><label for="format">Format</label><select id="format"><option value="json">JSON</option><option value="xml">XML</option></select><button id="sample" type="button" class="secondary">Load sample</button></div></div>
+        <label for="source" class="field-label">Diagram specification</label>
+        <textarea id="source" spellcheck="false" aria-describedby="hint"></textarea>
+        <div class="editor-footer"><label class="upload">Upload .json or .xml<input id="upload" type="file" accept=".json,.xml,application/json,application/xml,text/xml"></label><button id="render" type="button" class="primary">Render diagram</button></div>
+        <p id="hint" class="hint">IDs must be unique. Relationships must reference existing actor or use case IDs.</p>
+        <p id="status" role="status" aria-live="polite"></p>
+      </section>
+      <section class="panel preview" aria-label="Diagram preview">
+        <div class="panel-heading"><h2>Preview</h2><button id="download" type="button" class="secondary" disabled>Download SVG</button></div>
+        <div id="canvas" class="canvas"><p class="empty">Your diagram will appear here.</p></div>
+      </section>
+    </div>
+  </main>
+  <footer>Use case diagrams · JSON / XML · SVG export · No dependencies</footer>
+  <script type="module" src="./src/app.js"></script>
+</body>
+</html>
