@@ -54,7 +54,7 @@ export function renderDiagram(model) {
   actors.forEach(actor=>{
     const p=positions.get(actor.id);
     stickFigure(svg,p.x,p.y-10);
-    multiline(svg,actor.name,p.x,p.y+63,19);
+    multiline(svg,actor.name,p.x,p.y+63+(wrapLabel(actor.name,19).length-1)*9,19);
   });
   cases.forEach(item=>{
     const p=positions.get(item.id);

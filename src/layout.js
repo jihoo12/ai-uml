@@ -42,19 +42,39 @@ export function computeLayout(model) {
   const columns = [[], [], []];
   order.forEach(id => columns[depth.get(id)].push(id));
 
-  const rowHeight = Math.max(140, ...model.useCases.map(item => wrapLabel(item.name, 22).length * 20 + 100));
-  const maxRows = Math.max(1, ...columns.map(c => c.length), model.actors.length);
-  const height = Math.max(470, maxRows * rowHeight + 165);
+  // Reserve the full rendered bounds of each shape and label, plus a visual gap.
+  // Actor captions start below the stick figure; a multi-line label extends downward.
+  const actorBounds = actor => ({
+    above: 40,
+    below: 75 + (wrapLabel(actor.name, 19).length - 1) * 18
+  });
+  const useCaseBounds = item => {
+    const radius = Math.max(43, wrapLabel(item.name, 22).length * 10 + 18);
+    return { above: radius, below: radius };
+  };
+  const nodeById = new Map(model.useCases.map(item => [item.id, item]));
+  const groups = [
+    model.actors.map(actor => ({ id: actor.id, name: actor.name, kind: 'actor', ...actorBounds(actor) })),
+    ...columns.map(column => column.map(id => {
+      const item = nodeById.get(id);
+      return { id, name: item.name, kind: 'usecase', ...useCaseBounds(item) };
+    }))
+  ];
+  const gap = 32;
+  const top = 150;
+  const groupHeight = group => group.reduce((total, node) => total + node.above + node.below + gap, 0);
+  const height = Math.max(470, top + Math.max(...groups.map(groupHeight)) + 75);
   const width = 1290;
   const positions = new Map();
-  const even = (i, length) => 175 + (i + 1) * (height - 260) / (length + 1);
-  model.actors.forEach((actor, i) => positions.set(actor.id, {
-    x: 125, y: even(i, model.actors.length), kind: 'actor', name: actor.name
-  }));
-  columns.forEach((column, col) => {
-    for (let i = 0; i < column.length; i++) {
-      const item = model.useCases.find(item => item.id === column[i]);
-      positions.set(item.id, { x: 465 + col * 295, y: even(i, column.length), kind: 'usecase', name: item.name });
+  groups.forEach((group, groupIndex) => {
+    let cursor = top;
+    for (const node of group) {
+      const y = cursor + node.above;
+      positions.set(node.id, {
+        x: groupIndex === 0 ? 125 : 465 + (groupIndex - 1) * 295,
+        y, kind: node.kind, name: node.name
+      });
+      cursor = y + node.below + gap;
     }
   });
   return { width, height, positions, columns };
