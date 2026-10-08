@@ -19,6 +19,29 @@ Open **http://localhost:8000** in a modern browser.
 3. Click **Render diagram**.
 4. Export the result with **Download SVG**.
 
+## Generate SVG from a file (CLI)
+
+Node.js 18+ is required. Install the CLI's XML DOM dependency:
+
+```sh
+npm install
+```
+
+Generate an SVG without opening a browser:
+
+```sh
+node cli/generate-svg.mjs examples/order-system.json
+node cli/generate-svg.mjs examples/order-system.xml output.svg
+```
+
+When the output path is omitted, the file is saved next to the input with an `.svg` extension. You can also stream the SVG to stdout:
+
+```sh
+node cli/generate-svg.mjs examples/order-system.json --stdout > output.svg
+```
+
+The same renderer powers both the web preview and the CLI, so diagrams have matching layouts. The CLI validates references and safely escapes all labels in its SVG output.
+
 ## JSON format
 
 ```json

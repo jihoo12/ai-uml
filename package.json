@@ -1,1 +1,13 @@
-{"name":"ai-uml","version":"0.1.0","private":true,"type":"module","scripts":{"test":"node --test tests/*.test.mjs"}}
+{
+  "name": "ai-uml",
+  "version": "0.2.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test tests/*.test.mjs",
+    "svg": "node cli/generate-svg.mjs"
+  },
+  "dependencies": {
+    "@xmldom/xmldom": "^0.8.11"
+  }
+}

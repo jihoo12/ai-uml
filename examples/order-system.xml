@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<diagram type="usecase" title="Order System" system="Shopping Mall">
+  <actors>
+    <actor id="customer" name="Customer"/>
+    <actor id="admin" name="Administrator"/>
+  </actors>
+  <useCases>
+    <useCase id="login" name="Log In"/>
+    <useCase id="order" name="Place Order"/>
+    <useCase id="manage" name="Manage Orders"/>
+  </useCases>
+  <relationships>
+    <relationship from="customer" to="login" type="association"/>
+    <relationship from="customer" to="order" type="association"/>
+    <relationship from="admin" to="manage" type="association"/>
+    <relationship from="order" to="login" type="include"/>
+  </relationships>
+</diagram>

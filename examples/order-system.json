@@ -1,0 +1,51 @@
+{
+  "type": "usecase",
+  "title": "Order System",
+  "system": "Shopping Mall",
+  "actors": [
+    {
+      "id": "customer",
+      "name": "Customer"
+    },
+    {
+      "id": "admin",
+      "name": "Administrator"
+    }
+  ],
+  "useCases": [
+    {
+      "id": "login",
+      "name": "Log In"
+    },
+    {
+      "id": "order",
+      "name": "Place Order"
+    },
+    {
+      "id": "manage",
+      "name": "Manage Orders"
+    }
+  ],
+  "relationships": [
+    {
+      "from": "customer",
+      "to": "login",
+      "type": "association"
+    },
+    {
+      "from": "customer",
+      "to": "order",
+      "type": "association"
+    },
+    {
+      "from": "admin",
+      "to": "manage",
+      "type": "association"
+    },
+    {
+      "from": "order",
+      "to": "login",
+      "type": "include"
+    }
+  ]
+}
