@@ -194,8 +194,7 @@ function mermaidText(text) {
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;")
     .replace(/\|/g, "&#124;")
-    .replace(/%%/g, "% %")
-    .replace(/;/g, "&#59;");
+    .replace(/%%/g, "% %");
 }
 
 function memberText(text) {
