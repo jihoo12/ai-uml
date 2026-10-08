@@ -1,0 +1,69 @@
+{
+  "type": "usecase",
+  "title": "호텔 Room 예약 시스템",
+  "system": "호텔 Room 예약 시스템",
+  "actors": [
+    {
+      "id": "customer",
+      "name": "고객"
+    }
+  ],
+  "useCases": [
+    {
+      "id": "reserve",
+      "name": "호텔 Room 예약"
+    },
+    {
+      "id": "options",
+      "name": "Room 옵션 선택"
+    },
+    {
+      "id": "type",
+      "name": "Room 유형 선택"
+    },
+    {
+      "id": "size",
+      "name": "Room 크기 선택"
+    },
+    {
+      "id": "price",
+      "name": "Room 가격 선택"
+    },
+    {
+      "id": "confirmation",
+      "name": "예약 번호 발급"
+    }
+  ],
+  "relationships": [
+    {
+      "from": "customer",
+      "to": "reserve",
+      "type": "association"
+    },
+    {
+      "from": "options",
+      "to": "reserve",
+      "type": "extend"
+    },
+    {
+      "from": "options",
+      "to": "type",
+      "type": "include"
+    },
+    {
+      "from": "options",
+      "to": "size",
+      "type": "include"
+    },
+    {
+      "from": "options",
+      "to": "price",
+      "type": "include"
+    },
+    {
+      "from": "reserve",
+      "to": "confirmation",
+      "type": "include"
+    }
+  ]
+}
