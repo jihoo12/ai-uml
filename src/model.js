@@ -52,10 +52,10 @@ export function xmlToObject(xml, DOMParserClass = globalThis.DOMParser) {
   if (/<!DOCTYPE|<!ENTITY/i.test(xml)) throw new Error('DTD and entity declarations are not allowed.');
   if (!DOMParserClass) throw new Error('XML parsing requires a browser DOMParser.');
   const doc = new DOMParserClass().parseFromString(xml, 'application/xml');
-  if (doc.querySelector('parsererror')) throw new Error('Invalid XML syntax.');
+  if (doc.querySelector?.('parsererror') || doc.getElementsByTagName('parsererror').length) throw new Error('Invalid XML syntax.');
   const root = doc.documentElement;
   if (root.tagName !== 'diagram') throw new Error('XML root must be <diagram>.');
-  const direct = (parent, tag) => Array.from(parent?.children ?? []).filter(el => el.tagName === tag);
+  const direct = (parent, tag) => Array.from(parent?.childNodes ?? []).filter(el => el.nodeType === 1 && el.tagName === tag);
   const single = tag => direct(root, tag)[0];
   const nodes = (container, tag) => direct(single(container), tag).map(el => ({ id: el.getAttribute('id'), name: el.getAttribute('name') }));
   const relations = direct(single('relationships'), 'relationship').map(el => ({
